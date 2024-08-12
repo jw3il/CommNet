@@ -197,6 +197,10 @@ function MazeBase:to_sentence(sentence)
 end
 
 function MazeBase:get_visible_state(data, use_lut)
+    if g_opts.batch_size == 1 then
+        print("")
+        print("Printing observation of agent " .. self.agent.name .. " at (" .. self.agent.loc.x .. "," .. self.agent.loc.y .. ")")
+    end
     local lut_counter = 0
     for dy = -self.visibility, self.visibility do
         for dx = -self.visibility, self.visibility do
@@ -209,7 +213,11 @@ function MazeBase:get_visible_state(data, use_lut)
                 x = self.agent.loc.x + dx
             end
             if self.map.items[y] and self.map.items[y][x] then
+                -- print(x .. "," .. y .. ":" .. pairs(self.map.items[y][x]))
                 for _, e in pairs(self.map.items[y][x]) do
+                    if g_opts.batch_size == 1 then
+                        print("Found " .. tostring(e) .. " at (" .. x .. "," .. y .. ")")
+                    end
                     if self.agent == e or (not e.attr._invisible) then
                         local s = e:to_sentence(0, 0, true)
                         if g_opts.batch_size == 1 then
@@ -230,6 +238,9 @@ function MazeBase:get_visible_state(data, use_lut)
                                     local p = (data_y-1)*(2*self.visibility+1) + data_x
                                     data[lut_counter] = (p-1)*g_opts.nwords + self.vocab[s[i]]
                                 else
+                                    if g_opts.batch_size == 1 then
+                                        print(self.agent.name, '=>', s[i], "added to (relative) " .. data_x .. ", " .. data_y)
+                                    end
                                     data[data_y][data_x][self.vocab[s[i]]] = 1
                                 end
                             end
