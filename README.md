@@ -4,6 +4,21 @@ This is a set of codes used in our [paper](https://arxiv.org/abs/1605.07736) for
 The main code is for training CommNet and other baselines on traffic and combat tasks. The code in [babi](babi) subdirectory is for training the model on [bAbI tasks](http://fb.ai/babi), and its documentation can be found [here](babi/README.md). 
 The code for the lever pulling task can be found in [levers](levers) subdirectory. The remainder of this documentation is for the main code.
 
+## 🐋 Docker Setup
+
+This fork provides a `Dockerfile` which allows for easy setup of the repository.
+
+To create the image with name `commnet`, simply clone this repository and execute
+```
+docker build -t commnet .
+```
+
+You can then run CommNet interactively with `docker run -it --rm commnet`. An overview of the available arguments is provided below and by running 
+
+```
+docker run -it --rm commnet --help
+```
+
 ## Requirements
 All you need is [Torch7](http://torch.ch/) and its [nngraph](http://github.com/torch/nngraph) package. Optionally, install **ansicolors** for better visualization, and **gnuplot** for plotting during training.
 
@@ -124,3 +139,14 @@ Train LSTM on combat tasks
     
     th main.lua --lrate 0.001 --model lstm --games_config_path games/config/combat_game.lua \
     --nagents 5 --max_steps 40 --epochs 300 --comm
+
+
+## Debug samples
+
+```
+th main.lua --lrate 0.003 --model lstm --games_config_path games/config/crossing_easy.lua --nagents 5 --max_steps 20 --nactions 2 --curriculum_sta 10 --curriculum_end 40 --comm --visibility 1 --show --epochs 50 --show --batch_size 1 --nworker 1
+```
+
+```
+th main.lua --lrate 0.003 --model rnn --games_config_path games/config/crossing_hard.lua --nagents 20 --max_steps 40 --nactions 2 --epochs 300 --curriculum_sta 100 --curriculum_end 200 --comm --comm_range 5 --visibility 1 --show --batch_size 1 --nworker 1
+```
